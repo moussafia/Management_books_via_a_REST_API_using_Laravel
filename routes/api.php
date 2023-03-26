@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignRoleAndPermission;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProduitController;
 use Illuminate\Http\Request;
@@ -41,12 +42,12 @@ Route::group([
     'midlleware' => 'api',
     'prefix' =>'produit'
 ],function(){
-    Route::post('createProduit',[ProduitController::class,'store']);
-    Route::put('updateProduit/{id}',[ProduitController::class,'update']);
-    Route::get('indexProduit',[ProduitController::class,'index']);
-    Route::get('showProduit/{id}',[ProduitController::class,'show']);
-    Route::delete('destroyProduit/{id}',[ProduitController::class,'destroy']);
-    Route::get('filterProduit/{id}',[ProduitController::class,'filtrerParGenre']);
+    Route::post('createProduit',[ProduitController::class,'store'])->middleware(['role: admin']);
+    Route::put('updateProduit/{id}',[ProduitController::class,'update'])->middleware(['can: cud livres']);
+    Route::get('indexProduit',[ProduitController::class,'index'])->middleware(['can: show livres']);
+    Route::get('showProduit/{id}',[ProduitController::class,'show'])->middleware(['can: show livres']);
+    Route::delete('destroyProduit/{id}',[ProduitController::class,'destroy'])->middleware(['can: cud livres']);
+    Route::get('filterProduit/{id}',[ProduitController::class,'filtrerParGenre'])->middleware(['can: filtrer livres']);
 });
 Route::group([
     'midlleware' => 'api',
@@ -55,4 +56,15 @@ Route::group([
     Route::post('createcategory',[CategoryController::class,'store']);
     Route::put('updatecategory/{id}',[CategoryController::class,'update']);
     Route::delete('categoryProduit/{id}',[CategoryController::class,'destroy']);
-});
+})->middleware(['can: cud category']);
+Route::group([
+    'midlleware' => 'api',
+    'prefix' =>'user',
+    
+],function(){
+    Route::post('assignRole/{id}',[AssignRoleAndPermission::class,'assignRole']);
+    Route::post('assignPermissionToRoles/{id}',[AssignRoleAndPermission::class,'assignPermissionToRoles']);
+    Route::get('userWithRoleAndPermission/{id}',[AssignRoleAndPermission::class,'userWithRoleAndPermission']);
+    Route::delete('removeRoleToUser/{id}',[AssignRoleAndPermission::class,'removeRoleToUser']);
+
+})->middleware(['can: assign role/permission']);

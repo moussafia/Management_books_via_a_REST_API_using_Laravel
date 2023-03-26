@@ -7,7 +7,11 @@ use App\Models\Produit;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
-{
+{   
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     public function index()
     {
         $produit=Produit::with(['Category','Collection','User'])->get();
@@ -17,6 +21,7 @@ class ProduitController extends Controller
     }
     public function store(Request $request)
     {
+        
         $request->validate([
             'title'=>'required|max:255',
             'autor'=>'required|max:255',
@@ -99,7 +104,7 @@ class ProduitController extends Controller
     public function filtrerParGenre($genre_id){
         $category=Category::findOrFail($genre_id);
         $produitId=$category->produit()->pluck('produits.id')->toArray();
-        $produit=Produit::where('id',$produitId)->with(['Category','Collection','User'])->get();
+        $produit=Produit::whereIn('id',$produitId)->with(['Category','Collection','User'])->get();
         return response()->json([
             "produit"=>$produit
         ],200);
