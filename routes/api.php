@@ -42,12 +42,12 @@ Route::group([
     'midlleware' => 'api',
     'prefix' =>'produit'
 ],function(){
-    Route::post('createProduit',[ProduitController::class,'store'])->middleware(['role: admin']);
-    Route::put('updateProduit/{id}',[ProduitController::class,'update'])->middleware(['can: cud livres']);
-    Route::get('indexProduit',[ProduitController::class,'index'])->middleware(['can: show livres']);
-    Route::get('showProduit/{id}',[ProduitController::class,'show'])->middleware(['can: show livres']);
-    Route::delete('destroyProduit/{id}',[ProduitController::class,'destroy'])->middleware(['can: cud livres']);
-    Route::get('filterProduit/{id}',[ProduitController::class,'filtrerParGenre'])->middleware(['can: filtrer livres']);
+    Route::post('createProduit',[ProduitController::class,'store'])->middleware(['can:cud livres']);
+    Route::put('updateProduit/{id}',[ProduitController::class,'update'])->middleware(['can:cud livres']);
+    Route::get('indexProduit',[ProduitController::class,'index'])->middleware(['can:show livres']);
+    Route::get('showProduit/{id}',[ProduitController::class,'show'])->middleware(['can:show livres']);
+    Route::delete('destroyProduit/{id}',[ProduitController::class,'destroy'])->middleware(['can:cud livres']);
+    Route::get('filterProduit/{id}',[ProduitController::class,'filtrerParGenre'])->middleware(['can:filtrer livres']);
 });
 Route::group([
     'midlleware' => 'api',
@@ -67,4 +67,4 @@ Route::group([
     Route::get('userWithRoleAndPermission/{id}',[AssignRoleAndPermission::class,'userWithRoleAndPermission']);
     Route::delete('removeRoleToUser/{id}',[AssignRoleAndPermission::class,'removeRoleToUser']);
 
-})->middleware(['can: assign role/permission']);
+})->middleware(['can:assign role/permission']);
